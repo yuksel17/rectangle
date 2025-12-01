@@ -27,76 +27,35 @@
   <h2 id="result"></h2>
 
 <script>
-  // ---------------------------
-  // Replace these with real values
-  // ---------------------------
-  const CONTRACT_ADDRESS = "0x93988b68df34cbb8117ba2c834e52c9c4439dda7";
+  
+  const CONTRACT_ADDRESS = "0x542Cc3470d1e72451d11d8198f21BE91b6CFcb56"; // Remix’ten tekrar kopyala
 
   const ABI = [
+    // Paylaştığınız ABI'nın tamamı buraya kopyalandı.
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "h",
-          "type": "uint256"
-        }
-      ],
-      "name": "setHeight",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
+        "inputs": [], "name": "area", "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ], "stateMutability": "view", "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "w",
-          "type": "uint256"
-        }
-      ],
-      "name": "setWidth",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
+        "inputs": [], "name": "getHeight", "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ], "stateMutability": "view", "type": "function"
     },
     {
-      "inputs": [],
-      "name": "area",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
+        "inputs": [], "name": "getWidth", "outputs": [
+            { "internalType": "uint256", "name": "", "type": "uint256" }
+        ], "stateMutability": "view", "type": "function"
     },
     {
-      "inputs": [],
-      "name": "getHeight",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
+        "inputs": [
+            { "internalType": "uint256", "name": "h", "type": "uint256" }
+        ], "name": "setHeight", "outputs": [], "stateMutability": "nonpayable", "type": "function"
     },
     {
-      "inputs": [],
-      "name": "getWidth",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
+        "inputs": [
+            { "internalType": "uint256", "name": "w", "type": "uint256" }
+        ], "name": "setWidth", "outputs": [], "stateMutability": "nonpayable", "type": "function"
     }
   ];
 
@@ -105,67 +64,81 @@
   let contract;
 
   // ---------------------------
-  // Connect Wallet
+  // 1. CÜZDAN BAĞLANTISI (Connect Wallet) 🔥 EKLENDİ
   // ---------------------------
   document.getElementById("connectButton").onclick = async () => {
     if (typeof window.ethereum !== "undefined") {
-      await ethereum.request({ method: "eth_requestAccounts" });
-
-      provider = new ethers.BrowserProvider(window.ethereum);
-      signer = await provider.getSigner();
-      contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-
-      alert("Wallet connected!");
+      try {
+        await ethereum.request({ method: "eth_requestAccounts" });
+        
+        provider = new ethers.BrowserProvider(window.ethereum);
+        signer = await provider.getSigner();
+        contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+        
+        alert("Cüzdan başarıyla bağlandı!");
+      } catch (e) {
+         alert("Cüzdan bağlantısı başarısız oldu: " + e.message);
+      }
     } else {
-      alert("Please install MetaMask first.");
+      alert("Lütfen önce MetaMask'i kurun.");
     }
   };
 
   // ---------------------------
-  // Set Width
+  // 2. GENİŞLİK AYARLAMA (Set Width) 🔥 EKLENDİ
   // ---------------------------
   document.getElementById("setWidthButton").onclick = async () => {
+    if (!contract) return alert("Lütfen önce Cüzdanı Bağla (Connect Wallet) düğmesine tıklayın.");
+
     const w = document.getElementById("widthInput").value;
+    
     if (!w || w <= 0) {
-      alert("Please enter a valid width > 0");
+      alert("Lütfen geçerli bir genişlik (> 0) girin.");
       return;
     }
+    
     try {
-      const tx = await contract.setWidth(w);
-      await tx.wait();
-      alert("Width set successfully!");
+      const tx = await contract.setWidth(w); 
+      await tx.wait(); 
+      alert("Genişlik başarıyla ayarlandı!");
     } catch (e) {
-      alert("Error: " + e);
+      alert("Hata (Set Width): " + e.message); 
     }
   };
 
   // ---------------------------
-  // Set Height
+  // 3. YÜKSEKLİK AYARLAMA (Set Height) 🔥 EKLENDİ
   // ---------------------------
   document.getElementById("setHeightButton").onclick = async () => {
+    if (!contract) return alert("Lütfen önce Cüzdanı Bağla (Connect Wallet) düğmesine tıklayın.");
+
     const h = document.getElementById("heightInput").value;
+    
     if (!h || h <= 0) {
-      alert("Please enter a valid height > 0");
+      alert("Lütfen geçerli bir yükseklik (> 0) girin.");
       return;
     }
+    
     try {
-      const tx = await contract.setHeight(h);
-      await tx.wait();
-      alert("Height set successfully!");
+      const tx = await contract.setHeight(h); 
+      await tx.wait(); 
+      alert("Yükseklik başarıyla ayarlandı!");
     } catch (e) {
-      alert("Error: " + e);
+      alert("Hata (Set Height): " + e.message);
     }
   };
 
   // ---------------------------
-  // Calculate Area
+  // 4. ALAN HESAPLAMA (Area) 🔥 EKLENDİ
   // ---------------------------
   document.getElementById("areaButton").onclick = async () => {
+    if (!contract) return alert("Lütfen önce Cüzdanı Bağla (Connect Wallet) düğmesine tıklayın.");
+
     try {
-      const a = await contract.area();
-      document.getElementById("result").innerText = "Area = " + a;
+      const a = await contract.area(); 
+      document.getElementById("result").innerText = "Alan = " + a.toString(); 
     } catch (e) {
-      alert("Error: " + e);
+      alert("Hata (Area): " + e.message); 
     }
   };
 </script>
